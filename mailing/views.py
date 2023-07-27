@@ -17,3 +17,5 @@ class SettingDetailView(DetailView):
 class SettingCreateView(CreateView):
     model = Setting
     form_class = SettingForm
+    template_name = 'mailing/setting_form.html'
+
