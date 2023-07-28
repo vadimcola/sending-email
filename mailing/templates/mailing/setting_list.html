@@ -1,1 +1,28 @@
 {% extends 'mailing/base.html' %}
+{% block content %}
+    {% for object in object_list %}
+<div class="container">
+  <div class="row justify-content-md-center">
+    <div class="col-8 text-center ">
+        <div class="card mb-8 rounded-3 shadow-sm">
+          <div class="card-header py-3 text-center">
+            <h4 class="my-0 fw-normal">{{ object.message }}</h4>
+          </div>
+          <div class="card-body text-center">
+            <h1 class="card-title pricing-card-title">{{ object.mailing_time }}</h1>
+                <a class="btn btn-primary btn-lg" href="#" role="button">Открыть описание</a>
+                  <h1> </h1>
+
+                <a class="btn btn-success btn-lg" href="#" role="button">Изменить</a>
+
+                    <h1></h1>
+
+                <a class="btn btn-danger btn-lg" href="#" role="button">Удалить</a>
+
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+    {% endfor %}
+{% endblock %}
