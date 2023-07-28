@@ -1,9 +1,16 @@
 {% extends 'mailing/base.html' %}
 {% block content %}
-
-
-            {% csrf_token %}
-            {{ form.as_p }}
-
-
+<div class="col-12 text-center">
+    <a class="blog-header-logo text-body-emphasis text-decoration-none" >Создание рассылки</a>
+</div>
+<div class="container mt-4">
+    <div class="jumbotron p-5 pb-md-8 mx-auto text-center">
+        <form method="post">
+            <div class="card-body">
+                {% csrf_token %}
+                {{ form.as_p }}
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}
