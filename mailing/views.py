@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
+import mailing
 from config import settings
 from mailing.forms import SettingForm
 from mailing.models import Setting
@@ -26,12 +27,13 @@ class SettingCreateView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-
+        emails = [client.email for client in self.object.client.all()]
         send_mail(
-            subject='Поздравляем c регистрацией',
-            message=f'Для завершения регистрации пройдите по ссылке',
+            subject=self.object.message,
+            message=self.object.message.message,
             from_email=settings.EMAIL_HOST_USER,
-            recipient_list={'vadimcola@mail.ru'}
+            recipient_list=emails
+
         )
         return super().form_valid(form)
 
