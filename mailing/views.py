@@ -8,6 +8,7 @@ import mailing
 from config import settings
 from mailing.forms import SettingForm
 from mailing.models import Setting
+from mailing.services import send_newsletter
 
 
 class SettingListViews(ListView):
@@ -27,14 +28,7 @@ class SettingCreateView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        emails = [client.email for client in self.object.client.all()]
-        send_mail(
-            subject=self.object.message,
-            message=self.object.message.message,
-            from_email=settings.EMAIL_HOST_USER,
-            recipient_list=emails
-
-        )
+        send_newsletter(self.object)
         return super().form_valid(form)
 
 

@@ -1,4 +1,7 @@
-from mailing.models import Setting
+from django.core.mail import send_mail
+
+from config import settings
+from mailing.models import Setting, Client
 
 
 def daily_send():
@@ -31,8 +34,8 @@ def monthly_send():
 def send_newsletter(object: Client):
     emails = [client.email for client in object.client.all()]
     send_mail(
-        subject=self.object.message,
-        message=self.object.message.message,
+        subject=object.message,
+        message=object.message.message,
         from_email=settings.EMAIL_HOST_USER,
         recipient_list=emails
 
