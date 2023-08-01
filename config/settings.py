@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'django_crontab',
     'mailing',
 ]
 
@@ -139,3 +140,9 @@ EMAIL_USE_TLS = True
 
 SERVER_EMAIL = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+CRONJOBS = [
+    ('0 8 * * *', 'mailing.services.daily_send'),  # запускается каждый день в 8 утра
+    ('0 8 * * 0', 'mailing.services.weekly_send'),  # запускается каждое воскресенье в 8 утра
+    ('0 8 1 * *', 'mailing.services.monthly_send'),  # запускается в первый день каждого месяца в 8 утра
+]
