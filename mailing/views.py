@@ -28,7 +28,8 @@ class SettingCreateView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        send_newsletter(self.object)
+        if form.instance.mailing_status == 'active' or 'created':
+            send_newsletter(self.object)
         return super().form_valid(form)
 
 
