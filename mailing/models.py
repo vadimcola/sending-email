@@ -59,8 +59,15 @@ class Setting(models.Model):
 
 
 class Log(models.Model):
+
+    STATUS = (
+        ('success', 'Успешно'),
+        ('error', 'Ошибка'),
+    )
+
+    message = models.ForeignKey('Message', on_delete=models.CASCADE, **NULLABLE, verbose_name='Сообщение')
     date_attempt = models.DateTimeField(auto_now=True, verbose_name='Дата и время отправки')
-    attempt_status = models.BooleanField(default=False, verbose_name='Статус отправки')
+    attempt_status = models.CharField(max_length=20, choices=STATUS, verbose_name='Статус отправки')
     server_response = models.TextField(**NULLABLE, verbose_name='Ответ сервера')
 
     class Meta:

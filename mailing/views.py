@@ -7,8 +7,17 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 import mailing
 from config import settings
 from mailing.forms import SettingForm
-from mailing.models import Setting
+from mailing.models import Setting, Log
 from mailing.services import send_newsletter
+
+
+class IndexView(ListView):
+    def get(self, request, *args, **kwargs):
+        context = {
+            'title': 'Главная',
+
+        }
+        return render(request, 'mailing/index.html', context)
 
 
 class SettingListViews(ListView):
@@ -28,7 +37,7 @@ class SettingCreateView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        if form.instance.mailing_status == 'active' or 'created':
+        if self.object.mailing_status in ('active', 'created'):
             send_newsletter(self.object)
         return super().form_valid(form)
 
@@ -43,3 +52,12 @@ class SettingDeleteView(DeleteView):
     model = Setting
     success_url = reverse_lazy('mailing:setting_list')
     template_name = 'mailing/setting_confirm_delete.html'
+
+
+class LogListView(ListView):
+    model = Log
+
+
+class LogDetailView(DetailView):
+    model = Log
+    template_name = 'mailing/log_detail.html'
