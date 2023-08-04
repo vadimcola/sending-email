@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
@@ -21,6 +22,9 @@ class Message(models.Model):
     subject_message = models.CharField(max_length=255, **NULLABLE,
                                        verbose_name='Тема сообщения')
     message = models.TextField(**NULLABLE, verbose_name='Сообщение')
+
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE,
+                              verbose_name='Владелец')
 
     def __str__(self):
         return f'{self.subject_message}'
@@ -52,6 +56,8 @@ class Setting(models.Model):
                                          verbose_name='Переодичность отправки')
     mailing_status = models.CharField(max_length=7, choices=STATUS,
                                       verbose_name='Статус отправки')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE,
+                              verbose_name='Владелец')
 
     class Meta:
         verbose_name = 'Настройки публикации'

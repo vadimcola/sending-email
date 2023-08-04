@@ -7,7 +7,7 @@ from mailing.views import SettingListViews, SettingCreateView, SettingDetailView
 app_name = MailingConfig.name
 
 urlpatterns = [
-    path('index/', IndexView.as_view(), name='index_list'),
+    path('', IndexView.as_view(), name='index_list'),
     path('setting/', SettingListViews.as_view(), name='setting_list'),
     path('setting/create/', SettingCreateView.as_view(), name='setting_create'),
     path('setting/<int:pk>', SettingDetailView.as_view(), name='setting_detail'),

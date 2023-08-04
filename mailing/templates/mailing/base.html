@@ -86,7 +86,12 @@
         <a class="blog-header-logo text-body-emphasis text-decoration-none" href="{% url 'mailing:index_list' %}">Рассылки</a>
       </div>
       <div class="col-4 d-flex justify-content-end align-items-center">
-        <a class="btn btn-sm btn-outline-secondary" href="#">Войти</a>
+        {% if user.is_authenticated %}
+         <a class="btn btn-sm btn-outline-secondary" href="{% url 'users:logout' %}">Выйти</a>
+        {% else %}
+        <a class="btn btn-sm btn-outline-secondary" href="{% url 'users:login' %}">Войти</a>
+        <a class="btn btn-sm btn-outline-secondary" href="{% url 'users:register' %}">Регистрация</a>
+        {% endif %}
       </div>
     </div>
   </header>
@@ -98,7 +103,7 @@
       <a class="nav-item nav-link link-body-emphasis" href="{% url 'mailing:log_list' %}">Отчет</a>
       <a class="nav-item nav-link link-body-emphasis" href="#">Сообщения</a>
       <a class="nav-item nav-link link-body-emphasis" href="#">Блог</a>
-      <a class="nav-item nav-link link-body-emphasis" href="#">Добавить пользователя</a>
+      <a class="nav-item nav-link link-body-emphasis" href="#">Клиенты</a>
     </nav>
   </div>
 </div>
