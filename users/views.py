@@ -5,10 +5,14 @@ from django.contrib.auth import login
 from django.core.mail import send_mail
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, UpdateView, TemplateView
+from django.views.generic import CreateView, UpdateView, TemplateView, ListView, DetailView
 
-from users.forms import UserRegisterForm, RegisterForm
+from users.forms import UserRegisterForm, RegisterForm, UpdateForm
 from users.models import User
+
+
+class UserView(ListView):
+    model = User
 
 
 class RegisterView(CreateView):
@@ -45,13 +49,15 @@ class ConfirmView(TemplateView):
         return redirect('users:reg_success')
 
 
+class UserDetailView(DetailView):
+    model = User
+    template_name = 'users/user_detail.html'
+
+
 class UserUpdateView(UpdateView):
     model = User
-    form_class = RegisterForm
-    success_url = reverse_lazy('users:profile')
-
-    def get_object(self, queryset=None):
-        return self.request.user
+    form_class = UpdateForm
+    success_url = reverse_lazy('users:user_list')
 
 
 def generate_new_password(request):
