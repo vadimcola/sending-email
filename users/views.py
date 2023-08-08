@@ -54,12 +54,6 @@ class UserDetailView(DetailView):
     template_name = 'users/user_detail.html'
 
 
-class UserUpdateView(UpdateView):
-    model = User
-    form_class = UpdateForm
-    success_url = reverse_lazy('users:user_list')
-
-
 def generate_new_password(request):
     new_password = ''.join([str(random.randint(0, 9)) for _ in range(12)])
     send_mail(subject='Вы сменили пароль',
