@@ -2,6 +2,7 @@ import random
 
 from django.conf import settings
 from django.contrib.auth import login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
@@ -11,7 +12,7 @@ from users.forms import UserRegisterForm, RegisterForm, UpdateForm
 from users.models import User
 
 
-class UserView(ListView):
+class UserView(LoginRequiredMixin, ListView):
     model = User
 
 
@@ -49,7 +50,7 @@ class ConfirmView(TemplateView):
         return redirect('users:reg_success')
 
 
-class UserDetailView(DetailView):
+class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
     template_name = 'users/user_detail.html'
 

@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.mail import send_mail
 from django.forms import inlineformset_factory
 from django.shortcuts import render
@@ -11,7 +12,7 @@ from mailing.models import Setting, Log
 from mailing.services import send_newsletter
 
 
-class IndexView(ListView):
+class IndexView(LoginRequiredMixin, ListView):
     def get(self, request, *args, **kwargs):
         context = {
             'title': 'Главная',
@@ -20,16 +21,24 @@ class IndexView(ListView):
         return render(request, 'mailing/index.html', context)
 
 
-class SettingListViews(ListView):
+class SettingListViews(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = Setting
+    permission_required = 'mailing.view_setting'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if not self.request.user.is_superuser:
+            queryset = queryset.filter()
+
+        return queryset
 
 
-class SettingDetailView(DetailView):
+class SettingDetailView(LoginRequiredMixin, DetailView):
     model = Setting
     template_name = 'mailing/setting_detail.html'
 
 
-class SettingCreateView(CreateView):
+class SettingCreateView(LoginRequiredMixin, CreateView):
     model = Setting
     form_class = SettingForm
     template_name = 'mailing/setting_form.html'
@@ -39,25 +48,31 @@ class SettingCreateView(CreateView):
         self.object = form.save()
         if self.object.mailing_status in ('active', 'created'):
             send_newsletter(self.object)
+
+        self.object.owner = self.request.user
+        self.object.save()
+        self.object.mailing_status = 'created'
+        self.object.save()
         return super().form_valid(form)
 
 
-class SettingUpdateView(UpdateView):
+class SettingUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Setting
     form_class = SettingForm
     success_url = reverse_lazy('mailing:setting_list')
+    permission_required = 'mailing.change_setting'
 
 
-class SettingDeleteView(DeleteView):
+class SettingDeleteView(LoginRequiredMixin, DeleteView):
     model = Setting
     success_url = reverse_lazy('mailing:setting_list')
     template_name = 'mailing/setting_confirm_delete.html'
 
 
-class LogListView(ListView):
+class LogListView(LoginRequiredMixin, ListView):
     model = Log
 
 
-class LogDetailView(DetailView):
+class LogDetailView(LoginRequiredMixin, DetailView):
     model = Log
     template_name = 'mailing/log_detail.html'

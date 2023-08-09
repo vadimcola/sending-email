@@ -6,7 +6,7 @@ from mailing.models import Setting
 class SettingForm(forms.ModelForm):
     class Meta:
         model = Setting
-        fields = '__all__'
+        fields = ('client', 'message', 'mailing_time', 'frequency_mailing')
 
     def _init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
