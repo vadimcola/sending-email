@@ -62,6 +62,14 @@ class Setting(models.Model):
     class Meta:
         verbose_name = 'Настройки публикации'
         verbose_name_plural = 'Настройки публикаций'
+        ordering = ('pk',)
+
+        permissions = [
+            (
+                'block_status', 'Block or unblock status'
+            )
+        ]
+
 
 
 class Log(models.Model):

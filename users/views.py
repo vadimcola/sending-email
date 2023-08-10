@@ -2,18 +2,20 @@ import random
 
 from django.conf import settings
 from django.contrib.auth import login
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.mail import send_mail
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
+from django.views import generic
 from django.views.generic import CreateView, UpdateView, TemplateView, ListView, DetailView
 
 from users.forms import UserRegisterForm, RegisterForm, UpdateForm
 from users.models import User
 
 
-class UserView(LoginRequiredMixin, ListView):
+class UserView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = User
+    permission_required = 'users.view_user'
 
 
 class RegisterView(CreateView):
@@ -53,6 +55,19 @@ class ConfirmView(TemplateView):
 class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
     template_name = 'users/user_detail.html'
+
+
+class ToggleAccountStatusView(PermissionRequiredMixin, generic.View):
+    permission_required = 'users.block_user'
+
+    def get(self, request, pk):
+        user = get_object_or_404(User, id=pk)
+        if user.is_active:
+            user.is_active = False
+        else:
+            user.is_active = True
+        user.save()
+        return redirect(reverse('users:user_list'))
 
 
 def generate_new_password(request):

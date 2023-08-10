@@ -10,6 +10,15 @@
                         <div class="btn-group">
                             <a href="{% url 'users:user_detail' object.pk %}"
                                class="btn btn-sm btn-outline-secondary">Открыть</a>
+                            {% if perms.users.block_user or user.is_superuser %}
+                                {% if object.is_active %}
+                                    <a href="{% url 'users:toggle_account' object.pk %}"
+                                        class="btn btn-sm btn-outline-secondary">Заблокировать</a>
+                                {% else %}
+                                    <a href="{% url 'users:toggle_account' object.pk %}"
+                                        class="btn btn-sm btn-outline-secondary">Активировать</a>
+                                {% endif %}
+                            {% endif %}
                         </div>
                     </div>
                 </div>

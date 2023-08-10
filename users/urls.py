@@ -3,7 +3,8 @@ from django.urls import path
 from django.views.generic import TemplateView
 
 from users.apps import UsersConfig
-from users.views import RegisterView, ConfirmView, generate_new_password, UserView, UserDetailView
+from users.views import RegisterView, ConfirmView, generate_new_password, UserView, UserDetailView, \
+    ToggleAccountStatusView
 
 app_name = UsersConfig.name
 
@@ -18,4 +19,5 @@ urlpatterns = [
     path('users/detail/<int:pk>/', UserDetailView.as_view(), name='user_detail'),
     path('profile/gen-password', generate_new_password, name='generate_new_password'),
     path('users/', UserView.as_view(), name='user_list'),
+    path('block-unblock/<int:pk>/', ToggleAccountStatusView.as_view(), name='toggle_account'),
 ]
