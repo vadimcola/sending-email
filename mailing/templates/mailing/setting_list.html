@@ -20,9 +20,13 @@
                         <a class="btn btn-success btn-lg" href="{% url 'mailing:setting_update' object.pk %}" role="button">Изменить</a>
                     {% endif %}
               <h1></h1>
-
                 <a class="btn btn-danger btn-lg" href="{% url 'mailing:setting_delete' object.pk %}" role="button">Удалить</a>
-
+              <h1></h1>
+              {% if object.mailing_status == 'created' or object.mailing_status == 'active' %}
+                <a class="btn btn-danger btn-lg" href="{% url 'mailing:setting_status' object.pk %}" role="button">Отключить</a>
+              {% else %}
+                <a class="btn btn-danger btn-lg" href="{% url 'mailing:setting_status' object.pk %}" role="button">Запустить</a>
+              {% endif %}
           </div>
         </div>
     </div>

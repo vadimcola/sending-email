@@ -10,6 +10,9 @@ class Client(models.Model):
     email = models.EmailField(unique=True, verbose_name='Почта')
     comment = models.TextField(**NULLABLE, verbose_name='Описание')
 
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE,
+                              verbose_name='Владелец')
+
     def __str__(self):
         return f'{self.email}'
 
@@ -71,9 +74,7 @@ class Setting(models.Model):
         ]
 
 
-
 class Log(models.Model):
-
     STATUS = (
         ('success', 'Успешно'),
         ('error', 'Ошибка'),

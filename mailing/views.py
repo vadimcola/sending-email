@@ -1,15 +1,15 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.mail import send_mail
 from django.forms import inlineformset_factory
-from django.shortcuts import render, get_object_or_404
-from django.urls import reverse_lazy
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 import mailing
 from config import settings
-from mailing.forms import SettingForm
-from mailing.models import Setting, Log
+from mailing.forms import SettingForm, ClientForm, MessageForm
+from mailing.models import Setting, Log, Client, Message
 from mailing.services import send_newsletter
 
 
@@ -73,13 +73,15 @@ class SettingStatusMailing(PermissionRequiredMixin, generic.View):
     permission_required = 'mailing.block_status'
 
     def get(self, request, pk):
-        status = get_object_or_404(Setting, id=pk)
-        if user.is_active:
-            user.is_active = False
+
+        setting = get_object_or_404(Setting, id=pk)
+        if setting.mailing_status in ('created', 'active'):
+            setting.mailing_status = 'closed'
         else:
-            user.is_active = True
-        user.save()
-        return redirect(reverse('users:user_list'))
+            setting.mailing_status = 'created'
+
+        setting.save()
+        return redirect(reverse('mailing:setting_list'))
 
 
 class LogListView(LoginRequiredMixin, ListView):
@@ -89,3 +91,83 @@ class LogListView(LoginRequiredMixin, ListView):
 class LogDetailView(LoginRequiredMixin, DetailView):
     model = Log
     template_name = 'mailing/log_detail.html'
+
+
+class ClientListView(LoginRequiredMixin, ListView):
+    model = Client
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if not self.request.user.is_staff:
+            queryset = queryset.filter(owner=self.request.user.pk)
+        return queryset
+
+
+class ClientDetailView(LoginRequiredMixin, DetailView):
+    model = Client
+    template_name = 'mailing/client_detail.html'
+
+
+class ClientCreateView(LoginRequiredMixin, CreateView):
+    model = Client
+    form_class = ClientForm
+    template_name = 'mailing/client_form.html'
+    success_url = reverse_lazy('mailing:client_list')
+
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.owner = self.request.user
+        self.object.save()
+        return super().form_valid(form)
+
+
+class ClientUpdateView(LoginRequiredMixin, UpdateView):
+    model = Client
+    form_class = ClientForm
+    success_url = reverse_lazy('mailing:client_list')
+
+
+class ClientDeleteView(LoginRequiredMixin, DeleteView):
+    model = Client
+    success_url = reverse_lazy('mailing:client_list')
+    template_name = 'mailing/client_confirm_delete.html'
+
+
+class MessageListView(LoginRequiredMixin, ListView):
+    model = Message
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if not self.request.user.is_staff:
+            queryset = queryset.filter(owner=self.request.user.pk)
+        return queryset
+
+
+class MessageDetailView(LoginRequiredMixin, DetailView):
+    model = Message
+    template_name = 'mailing/message_detail.html'
+
+
+class MessageCreateView(LoginRequiredMixin, CreateView):
+    model = Message
+    form_class = MessageForm
+    template_name = 'mailing/message_form.html'
+    success_url = reverse_lazy('mailing:message_list')
+
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.owner = self.request.user
+        self.object.save()
+        return super().form_valid(form)
+
+
+class MessageUpdateView(LoginRequiredMixin, UpdateView):
+    model = Message
+    form_class = MessageForm
+    success_url = reverse_lazy('mailing:message_list')
+
+
+class MessageDeleteView(LoginRequiredMixin, DeleteView):
+    model = Message
+    success_url = reverse_lazy('mailing:message_list')
+    template_name = 'mailing/message_confirm_delete.html'
