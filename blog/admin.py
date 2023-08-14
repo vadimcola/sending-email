@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from blog.models import Blog
+
+
+@admin.register(Blog)
+class ClientAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'title', 'content', 'picture', 'views', 'time_create')

@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.mail import send_mail
+from django.db.models import Count
 from django.forms import inlineformset_factory
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
@@ -7,17 +8,28 @@ from django.views import generic
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
 import mailing
+from blog.models import Blog
 from config import settings
 from mailing.forms import SettingForm, ClientForm, MessageForm
 from mailing.models import Setting, Log, Client, Message
 from mailing.services import send_newsletter
 
 
-class IndexView(LoginRequiredMixin, ListView):
+class IndexView(generic.ListView):
     def get(self, request, *args, **kwargs):
+        newsletters_count = Setting.objects.count()  # получаем информацию об общем количестве рассылок
+        newsletters_count_run = Setting.objects.filter(
+            mailing_status='active').count()  # получаем информацию об количестве активных рассылок
+        unique_customers_count = Client.objects.annotate(num_newsletters=Count('client_name')).filter(
+            num_newsletters__gt=0).count()  # получаем информацию об уникальных клиентах
+        blog_posts = list(Blog.objects.order_by('?').values_list('title', flat=True)[
+                          :3])  # получаем три случайные публикации из блока
         context = {
             'title': 'Главная',
-
+            'newsletters_count': newsletters_count,
+            'newsletters_count_run': newsletters_count_run,
+            'unique_customers_count': unique_customers_count,
+            'blog_posts': blog_posts
         }
         return render(request, 'mailing/index.html', context)
 
