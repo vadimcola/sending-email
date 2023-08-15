@@ -10,7 +10,7 @@
               </div>
               <div class="card-body">
                 <img class="img-thumbnail"
-                     src="{{ object.picture }}"
+                     src="{{ object.picture|upload_media }}"
                      alt="Thumbnail image">
                 <ul class="list-unstyled mt-3 mb-4">
                   <li>{{ object.content}}</li>

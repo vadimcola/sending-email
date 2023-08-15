@@ -1,26 +1,55 @@
 {% extends 'mailing/base.html' %}
+{% load index_tags %}
 {% block content %}
-    <div class="row justify-content-center">
-    <h5 class="card-title text-muted text-center font-weight-bold"><br>Сервис по управлению рассылками<br></h5>
-    <h5 class="card-title text-muted"></h5>
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-4">
-                <h5 class="card-title text-muted text-center font-weight-bold">Всего рассылок</h5>
-                <p class="text-center">{{ newsletters_count }}</p>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title">Управление рассылками</h2>
+                </div>
             </div>
-            <div class="col-sm-4">
-                <h5 class="card-title text-muted text-center font-weight-bold">Действующие рассылки</h5>
-                <p class="text-center">{{ newsletters_count_run }}</p>
+
+            <hr>
+            {% get_random_articles as random_articles %}
+            {% for article in random_articles %}
+            <div class="card mb-4">
+
+                <div class="card-body">
+                    <h2 class="card-title">{{ article.title }}</h2>
+                    <p class="card-text">{{ article.content|truncatechars:50 }}</p>
+                    <a href="{% url 'blog:blog_detail' article.pk %}" class="btn btn-primary btn-sm">Читать далее</a>
+                </div>
             </div>
-            <div class="col-sm-4">
-                <h5 class="card-title text-muted text-center font-weight-bold">Наши уникальные клиенты</h5>
-                <p class="text-center">{{ unique_customers_count }}</p>
-            </div>
-            <div class="col-sm-4">
-                <h5 class="card-title text-muted text-center font-weight-bold">Наши публикации</h5>
-                <p class="text-center">{{ blog_posts }}</p>
-            </div>
+            {% endfor %}
+
+        </div>
+        <div class="col-md-4">
+            <!-- Боковая панель с информацией -->
+            <aside>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Количество рассылок всего</h5>
+                        <p class="card-text">Результат: {% total_mailing_number %}</p>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Количество активных рассылок</h5>
+                        <p class="card-text">Результат: {% active_mailing_number %}</p>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Количество уникальных клиентов для рассылок</h5>
+                        <p class="card-text">Результат: {% unique_customers_number %}</p>
+                    </div>
+                </div>
+            </aside>
         </div>
     </div>
+</div>
+
 {% endblock %}
