@@ -155,3 +155,11 @@ CRONJOBS = [
     ('0 8 * * 0', 'mailing.services.weekly_send'),  # запускается каждое воскресенье в 8 утра
     ('0 8 1 * *', 'mailing.services.monthly_send'),  # запускается в первый день каждого месяца в 8 утра
 ]
+
+CACHE_ENABLED = os.getenv('CACHE_ENABLED') == '1'
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": os.getenv('CACHE_LOCATION'),
+    }
+}

@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.decorators.cache import cache_page
 
 from mailing.apps import MailingConfig
 from mailing.views import SettingListViews, SettingCreateView, SettingDetailView, SettingUpdateView, SettingDeleteView, \
@@ -29,3 +30,4 @@ urlpatterns = [
     path('message/update/<int:pk>/', MessageUpdateView.as_view(), name='message_update'),
     path('message/delete/<int:pk>/', MessageDeleteView.as_view(), name='message_delete'),
 ]
+

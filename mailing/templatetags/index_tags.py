@@ -1,10 +1,11 @@
 from random import sample
-from django import template
 from blog.models import Blog
 from mailing.models import *
-
+from django import template
 
 register = template.Library()
+
+
 
 
 @register.simple_tag()
@@ -26,6 +27,7 @@ def unique_customers_number():
 def upload_media(image):
     if image:
         return f'/media/{image}'
+    return '#'
 
 
 @register.simple_tag()
