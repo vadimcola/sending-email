@@ -47,12 +47,12 @@ class SettingCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
+        self.object.mailing_status = 'created'
+        self.object.save()
         if self.object.mailing_status in ('active', 'created'):
             send_newsletter(self.object)
 
         self.object.owner = self.request.user
-        self.object.save()
-        self.object.mailing_status = 'created'
         self.object.save()
         return super().form_valid(form)
 

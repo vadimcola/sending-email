@@ -11,6 +11,9 @@ def daily_send():
             send_newsletter(item)
             item.mailing_status = 'active'
             item.save()
+            print("да")
+        else:
+            print("нет")
 
 
 def weekly_send():
