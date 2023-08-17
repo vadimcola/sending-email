@@ -11,9 +11,6 @@ def daily_send():
             send_newsletter(item)
             item.mailing_status = 'active'
             item.save()
-            print("да")
-        else:
-            print("нет")
 
 
 def weekly_send():
@@ -51,5 +48,3 @@ def send_newsletter(object: Client):
     Log.objects.create(message=object.message,
                        attempt_status=attempt_status,
                        server_response=server_response)
-
-
