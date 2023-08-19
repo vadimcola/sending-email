@@ -51,7 +51,6 @@ class SettingCreateView(LoginRequiredMixin, CreateView):
         self.object.save()
         if self.object.mailing_status in ('active', 'created'):
             send_newsletter(self.object)
-
         self.object.owner = self.request.user
         self.object.save()
         return super().form_valid(form)

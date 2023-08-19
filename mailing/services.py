@@ -1,7 +1,7 @@
 from django.core.mail import send_mail
 
 from config import settings
-from mailing.models import Setting, Client, Log, Message
+from mailing.models import Setting, Client, Log
 
 
 def daily_send():
@@ -15,7 +15,7 @@ def daily_send():
 
 def weekly_send():
     for item in Setting.objects.filter(frequency_mailing='OPW'):
-        if item.mailing_status == 'active' or 'created':
+        if item.mailing_status in ('active', 'created'):
             item.save()
             send_newsletter(item)
             item.mailing_status = 'active'
@@ -24,7 +24,7 @@ def weekly_send():
 
 def monthly_send():
     for item in Setting.objects.filter(frequency_mailing='OPM'):
-        if item.mailing_status == 'active' or 'created':
+        if item.mailing_status in ('active', 'created'):
             item.save()
             send_newsletter(item)
             item.mailing_status = 'active'
