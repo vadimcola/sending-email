@@ -1,15 +1,39 @@
 from django.core.mail import send_mail
 
+from django.template.defaultfilters import pprint
+from django.utils.datetime_safe import datetime
+
 from config import settings
 from mailing.models import Setting, Client, Log
 
 
+def send():
+    for item in Setting.objects:
+        if item.mailing_status == "created":
+            if item.mailing_time <= datetime.now():
+                send_newsletter(item)
+                item.mailing_status = 'active'
+                item.next_run = ???????????
+                item.save()
+        if item.mailing_status == "active":
+            if item.next_run <= datetime.now():
+                send_newsletter(item)
+                item.next_run = ???????????
+                item.save()
+
+
+
+
+
+
+
 def daily_send():
     for item in Setting.objects.filter(frequency_mailing='OPD'):
-        if item.mailing_status in ('active', 'created'):
+        if item.mailing_status in ('created'):
             item.save()
-            send_newsletter(item)
             item.mailing_status = 'active'
+            send_newsletter(item)
+            item.mailing_status = 'created'
             item.save()
 
 
