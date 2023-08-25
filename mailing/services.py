@@ -8,22 +8,10 @@ from mailing.models import Setting, Client, Log
 
 
 def send():
-    for item in Setting.objects:
-        if item.mailing_status == "created":
-            if item.mailing_time <= datetime.now():
-                send_newsletter(item)
-                item.mailing_status = 'active'
-                item.next_run = ???????????
-                item.save()
-        if item.mailing_status == "active":
-            if item.next_run <= datetime.now():
-                send_newsletter(item)
-                item.next_run = ???????????
-                item.save()
-
-
-
-
+    for item in Setting.objects.filter(mailing_time__lte=datetime.now()).filter(mailing_status='created'):
+        send_newsletter(item)
+        item.next_run = item.mailing_time + datetime.timedelta(hours=24)
+        item.save()
 
 
 
