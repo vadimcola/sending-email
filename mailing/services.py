@@ -17,7 +17,7 @@ def send():
             item.next_run = item.mailing_time + relativedelta(months=1)
         item.mailing_status = "active"
         item.save()
-    for item in Setting.objects.filter(mailing_time__lte=datetime.now()).filter(mailing_status='active'):
+    for item in Setting.objects.filter(next_run__lte=datetime.now()).filter(mailing_status='active'):
         send_newsletter(item)
         if item.frequency_mailing == "OPD":
             item.next_run = item.next_run + timedelta(minutes=1)
@@ -27,13 +27,6 @@ def send():
             item.next_run = item.next_run + relativedelta(months=1)
         item.mailing_status = "active"
         item.save()
-
-
-
-
-
-
-
 
 
 def daily_send():
