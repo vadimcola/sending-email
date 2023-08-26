@@ -1,15 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.core.mail import send_mail
-from django.db.models import Count
-from django.forms import inlineformset_factory
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-import mailing
-from blog.models import Blog
-from config import settings
 from mailing.forms import SettingForm, ClientForm, MessageForm
 from mailing.models import Setting, Log, Client, Message
 from mailing.services import send_newsletter

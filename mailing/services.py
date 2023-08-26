@@ -1,7 +1,6 @@
 from django.core.mail import send_mail
-
-from django.template.defaultfilters import pprint
-from django.utils.datetime_safe import datetime
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 from config import settings
 from mailing.models import Setting, Client, Log
@@ -10,8 +9,30 @@ from mailing.models import Setting, Client, Log
 def send():
     for item in Setting.objects.filter(mailing_time__lte=datetime.now()).filter(mailing_status='created'):
         send_newsletter(item)
-        item.next_run = item.mailing_time + datetime.timedelta(hours=24)
+        if item.frequency_mailing == "OPD":
+            item.next_run = item.mailing_time + timedelta(minutes=1)
+        elif item.frequency_mailing == "OPW":
+            item.next_run = item.mailing_time + timedelta(weeks=1)
+        elif item.frequency_mailing == "OPM":
+            item.next_run = item.mailing_time + relativedelta(months=1)
+        item.mailing_status = "active"
         item.save()
+    for item in Setting.objects.filter(mailing_time__lte=datetime.now()).filter(mailing_status='active'):
+        send_newsletter(item)
+        if item.frequency_mailing == "OPD":
+            item.next_run = item.next_run + timedelta(minutes=1)
+        elif item.frequency_mailing == "OPW":
+            item.next_run = item.next_run + timedelta(weeks=1)
+        elif item.frequency_mailing == "OPM":
+            item.next_run = item.next_run + relativedelta(months=1)
+        item.mailing_status = "active"
+        item.save()
+
+
+
+
+
+
 
 
 
