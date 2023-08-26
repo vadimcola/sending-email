@@ -61,7 +61,8 @@ class Setting(models.Model):
                                       verbose_name='Статус отправки')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE,
                               verbose_name='Владелец')
-    next_run = models.DateField(auto_now=True)
+    next_run = models.DateTimeField(default=timezone.now,
+                                    verbose_name='Время следующей отправки')
 
     class Meta:
         verbose_name = 'Настройки публикации'
