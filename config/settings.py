@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -82,7 +84,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
+load_dotenv(BASE_DIR / '.env')
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -135,8 +137,8 @@ LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/users/'
 
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'vadimcola181183@gmail.com'
-EMAIL_HOST_PASSWORD = 'qaqgwvbloaamvied'
+EMAIL_HOST_USER = os.getenv('EMAIL-HOST-USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL-HOST-PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
